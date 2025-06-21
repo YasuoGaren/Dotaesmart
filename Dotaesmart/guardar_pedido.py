@@ -1,54 +1,57 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import os
 from openpyxl import Workbook, load_workbook
 from datetime import datetime
-import os
 
 app = Flask(__name__)
-CORS(app)  # Permitir peticiones desde archivos HTML locales
+CORS(app)
 
-# Ruta local al archivo Excel (en tu carpeta sincronizada con Google Drive)
-EXCEL_PATH = r'C:\Users\u1874e\Desktop\Dotaesmart\pedidos\pedidos.xlsx'
+CARPETA_PEDIDOS = "pedidos"
+ARCHIVO_EXCEL = os.path.join(CARPETA_PEDIDOS, "pedidos.xlsx")
 
-# Crear el archivo si no existe, con encabezados
-if not os.path.exists(EXCEL_PATH):
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Pedidos"
-    ws.append(["Fecha", "Nombre", "Dirección", "Contacto", "Producto", "Cantidad", "Precio Unitario", "Total"])
-    wb.save(EXCEL_PATH)
+os.makedirs(CARPETA_PEDIDOS, exist_ok=True)
 
 @app.route('/guardar_pedido', methods=['POST'])
 def guardar_pedido():
     try:
-        data = request.get_json()
-        nombre = data.get('nombre')
-        direccion = data.get('direccion')
-        contacto = data.get('contacto')
-        carrito = data.get('carrito', [])
+        datos = request.json
+        nombre = datos['nombre']
+        direccion = datos['direccion']
+        contacto = datos['contacto']
+        carrito = datos['carrito']
 
-        if not nombre or not direccion or not contacto or not carrito:
-            return jsonify({"error": "Faltan datos"}), 400
 
-        wb = load_workbook(EXCEL_PATH)
-        ws = wb.active
-        fecha = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        if not os.path.exists(ARCHIVO_EXCEL):
+            wb = Workbook()
+            ws = wb.active
+            ws.append(["Fecha", "Nombre", "Dirección", "Contacto", "Producto", "Cantidad", "Precio"])
+        else:
+            wb = load_workbook(ARCHIVO_EXCEL)
+            ws = wb.active
+
+        fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         for item in carrito:
-            total = item['cantidad'] * item['precio']
             ws.append([
-                fecha, nombre, direccion, contacto,
-                item['nombre'], item['cantidad'],
-                item['precio'], total
+                fecha,
+                nombre,
+                direccion,
+                contacto,
+                item['nombre'],
+                item['cantidad'],
+                item['precio']
             ])
 
-        wb.save(EXCEL_PATH)
-        return jsonify({"mensaje": "Pedido guardado exitosamente"}), 200
+        wb.save(ARCHIVO_EXCEL)
 
+        return jsonify({"mensaje": "Pedido guardado correctamente"}), 200
     except Exception as e:
-        print(f"Error al guardar el pedido: {e}")
-        return jsonify({"error": "Error interno"}), 500
+        print("Error al guardar el pedido:", e)
+        return jsonify({"error": "Error al guardar el pedido"}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
+
 
