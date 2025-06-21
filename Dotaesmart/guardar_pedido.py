@@ -19,10 +19,10 @@ ARCHIVO_EXCEL_RUTA_COMPLETA = os.path.join(CARPETA_PEDIDOS, ARCHIVO_EXCEL_NOMBRE
 @app.route('/')
 def index():
     try:
-        return render_template('test.html')
+        return render_template('dotaesmart.html')
     except Exception as e:
-        print(f"Error al renderizar la plantilla 'test.html': {e}")
-        return f"<h1>Error al cargar la página principal</h1><p>Detalle: {e}</p><p>Verifica si 'test.html' está en la carpeta correcta y sin errores.</p>", 500
+        print(f"Error al renderizar la plantilla 'dotaesmart.html': {e}")
+        return f"<h1>Error al cargar la página principal</h1><p>Detalle: {e}</p><p>Verifica si 'dotaesmart.html' está en la carpeta correcta y sin errores.</p>", 500
 
 
 @app.route("/guardar_pedido", methods=["POST"])
