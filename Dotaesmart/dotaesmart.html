@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="Expertos en dotaciones de seguridad y fabricacion de guantes de carnaza">
+    <title>Dotaesmart</title>
+    <style>
+	.boton-centrado {
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 20px;
+}  
+        .modal-content {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 25px 30px;
+            max-width: 400px;
+            width: 90%;
+            margin: auto;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            color: #0b1c3f;
+        }
+
+        .modal-content label {
+            display: block;
+            margin: 10px 0 5px;
+            text-align: left;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .modal-content input[type="text"] {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .modal-content input[type="text"]:focus {
+            border-color: #0b1c3f;
+        }
+
+        /* Estilo de los botones */
+        .confirm-button, .close-button {
+            margin: 12px 5px 0;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        /* Confirmar */
+        .confirm-button {
+            background-color: #0b1c3f;
+            color: white;
+        }
+
+        .confirm-button:hover {
+            background-color: #132e6b;
+            transform: scale(1.03);
+        }
+
+        /* Cancelar */
+        .close-button {
+            background-color: #ccc;
+            color: #333;
+        }
+
+        .close-button:hover {
+            background-color: #aaa;
+            transform: scale(1.03);
+        }
+
+        /* Animación */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .ver-mas {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #0b1c3f;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .ver-mas:hover {
+            background-color: #f1c40f;
+            color: #0b1c3f;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .modal-content input {
+            width: 60px;
+            margin: 10px 0;
+        }
+
+        .confirm-button, .close-button {
+            margin: 10px 5px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .confirm-button {
+            background-color: #0b1c3f;
+            color: white;
+        }
+
+        .close-button {
+            background-color: #ccc;
+            color: black;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            text-align: center;
+            color: #0b1c3f;
+            margin-top: 30px;
+        }
+
+        .product-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .product-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 220px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .product-card:hover {
+            transform: scale(1.02);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .product-card h3 {
+            margin: 10px 0 5px;
+        }
+
+        .product-card p {
+            margin: 0;
+            color: #0b1c3f;
+            font-weight: bold;
+        }
+
+        .product-card button {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background-color: #0b1c3f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 300px;
+            height: 100%;
+            background-color: white;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            transition: right 0.3s;
+            z-index: 1000;
+        }
+
+        .cart-sidebar.active {
+            right: 0;
+        }
+
+        .cart-sidebar h2 {
+            margin-top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-items {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .cart-total {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .buy-button, .clear-button {
+            margin-top: 10px;
+            background-color: #f1c40f;
+            color: #0b1c3f;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .cart-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #0b1c3f;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .modal-content input {
+            width: 60px;
+            margin: 10px 0;
+        }
+
+        .confirm-button, .close-button {
+            margin: 10px 5px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .confirm-button {
+            background-color: #0b1c3f;
+            color: white;
+        }
+
+        .close-button {
+            background-color: #ccc;
+            color: black;
+        }
+
+        .remove-one {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 2px 6px;
+            margin-left: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #333;
+            cursor: pointer;
+        }
+        /* ESTILOS DEL FOOTER */
+        .footer {
+            background-color: #0b1c3f;
+            color: white;
+            padding: 40px 20px;
+            font-size: 14px;
+            /* Asegura que el footer ocupe el 100% del ancho */
+            width: 100%;
+            box-sizing: border-box; /* Incluye padding en el ancho total */
+        }
+
+        .footer-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20px;
+            max-width: 1200px; /* Puedes ajustar este max-width si quieres que el contenido del footer sea más ancho */
+            margin: auto;
+        }
+
+        .footer-column {
+            flex: 1 1 220px;
+            min-width: 200px;
+        }
+
+        .footer-column h3 {
+            color: #f1c40f; /* Amarillo */
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 5px;
+        }
+
+        .footer-column ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .footer-column ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-map {
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+            max-width: 200px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 30px;
+            color: #ccc;
+            font-size: 13px;
+        }
+        /* FIN ESTILOS DEL FOOTER */
+
+        .slider {
+            position: relative;
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .imagen-slider {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .flecha {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.4);
+            color: white;
+            border: none;
+            font-size: 30px;
+            padding: 10px;
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        .flecha.izquierda {
+            left: 10px;
+        }
+
+        .flecha.derecha {
+            right: 10px;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #002551; /* Azulito fondo */
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        nav {
+            margin-top: 10px;
+        }
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .container {
+            padding: 40px 20px;
+            max-width: 1000px; /* Mantiene el contenido principal centrado */
+            margin: auto;
+        }
+        .section-title {
+            color: #0b1c3f;
+            border-bottom: 3px solid #f1c40f; /* Amarillo */
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .whatsapp {
+            background-color: #25d366;
+            color: white;
+            padding: 15px;
+            display: inline-block;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        /* Eliminar esta regla si quieres que el footer antiguo no afecte */
+        /* footer {
+            background-color: #0b1c3f;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        } */
+        .logo {
+            max-width: 200px;
+            display: block;
+            margin: auto;
+        }
+        @media (max-width: 600px) {
+            nav {
+                font-size: 14px;
+            }
+            .container {
+                padding: 20px 10px;
+            }
+        }
+        .beneficios {
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+            padding: 40px 20px;
+            text-align: center;
+            background-color: white;
+            max-width: 1000px;
+            margin: auto;
+            flex-wrap: wrap;
+        }
+
+        .beneficio {
+            flex: 1;
+            min-width: 250px;
+            padding: 20px;
+        }
+
+        .beneficio img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+        }
+
+        .beneficio h3 {
+            color: #2c3e50;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .beneficio p {
+            color: #333;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .icono-wa {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        .icono-fc {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        .icono-in {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <header>
+        <img src="logo.png" alt="Logo de Dotaesmart" class="logo" />
+        <h1><p style="color: gold;">Dotaesmart</p></h1>
+        <p>Expertos en dotaciones de seguridad industrial y fabricación de guantes de carnaza para sectores industriales. Calidad, resistencia y confianza para proteger tu equipo.</p>
+        <nav>
+    		<a href="#inicio">Inicio</a>
+    		<a href="#quienes">Quiénes somos</a>
+    		<a href="#servicios">Servicios</a>
+    		<a href="#productos">Productos</a>
+    		<a href="#contacto">Contacto</a>
+       </nav>
+    </header>
+
+    <div class="container">
+        <section id="inicio">
+            <h2 class="section-title">Inicio</h2>
+            <p>
+            <div class="slider">
+                <button class="flecha izquierda" onclick="cambiarImagen(-1)">❮</button>
+                <img id="miImagen" src="dotacion.png" alt="Fondo rotativo" class="imagen-slider" />
+                <button class="flecha derecha" onclick="cambiarImagen(1)">❯</button>
+            </div>
+            <section id="quienes">
+                <h2 class="section-title">Quiénes somos</h2>
+                <p>
+                    En <strong>Dotaesmart</strong>, nos especializamos en la dotación de seguridad industrial, ofreciendo productos de alta calidad y fabricando guantes de carnaza diseñados para proteger a los trabajadores en todo momento.
+                    Nos encontramos en <strong>Mosquera, Cundinamarca</strong>, y nos enfocamos en brindar confianza, resistencia y cumplimiento para tus necesidades de protección laboral.
+                </p>
+            </section>
+
+            <section id="servicios">
+                <h2 class="section-title">Nuestros servicios</h2>
+
+                <ul>
+                    <li>Fabricación de guantes de carnaza personalizados</li>
+                    <li>Dotación de seguridad industrial (ropa, botas, cascos)</li>
+                    <li>Atención a empresas y pedidos al por mayor</li>
+                </ul>
+
+            </section>
+
+            <section class="beneficios">
+                <div class="beneficio">
+                    <img src="icono-fabrica.png" alt="Fábrica" />
+                    <h3>Somos Fabricantes</h3>
+                    <p>Utilizamos materiales de alta calidad para la elaboración de nuestros productos.</p>
+                </div>
+                <div class="beneficio">
+                    <img src="icono-durabilidad.png" alt="Calidad y durabilidad" />
+                    <h3>Calidad y Durabilidad</h3>
+                    <p>Contamos con unas rigurosas pruebas de calidad que hacen que nuestros productos sean los mejores.</p>
+                </div>
+                <div class="beneficio">
+                    <img src="icono-camion.png" alt="Envíos" />
+                    <h3>Envíos a Nivel Nacional</h3>
+                    <p>Nuestra red de transporte brinda cobertura nacional con costos optimizados para nuestros clientes.</p>
+                </div>
+
+            </section>
+            <section id="productos"> <h2 class="section-title">Productos Dotaesmart</h2>
+    <button class="cart-toggle" onclick="toggleCart()">🛒 Ver Carrito</button>
+
+    <div class="product-container">
+        <div class="product-card">
+            <img src="guante1.jpg" alt="Guante de carnaza">
+            <h3>Guante de carnaza</h3>
+            <p>$25.000</p>
+            <button onclick="showModal('Guante de carnaza', 25000)">Agregar al carrito</button>
+        </div>
+
+        <div class="product-card">
+            <img src="guante1.jpg" alt="Gafas de protección"> <h3>Gafas de protección</h3>
+            <p>$5.000</p>
+            <button onclick="showModal('Gafas de protección', 5000)">Agregar al carrito</button>
+        </div>
+
+        <div class="product-card">
+            <img src="casco1.jpg" alt="Casco de seguridad">
+            <h3>Casco de seguridad</h3>
+            <p>$35.000</p>
+            <button onclick="showModal('Casco de seguridad', 35000)">Agregar al carrito</button>
+        </div>
+
+        <div class="product-card">
+            <img src="botas1.jpg" alt="Botas industriales">
+            <h3>Botas industriales</h3>
+            <p>$70.000</p>
+            <button onclick="showModal('Botas industriales', 70000)">Agregar al carrito</button>
+        </div>
+    </div> </section>
+
+          <div class="boton-centrado">
+    	  <a href="productos.html" target="_blank" class="ver-mas">Ver todos los productos</a>
+          </div>
+
+            <section id="contacto">
+                <h2 class="section-title">Contáctanos</h2>
+                <p style="text-align: center;">Puedes comunicarte con nosotros por WhatsApp para cotizaciones o pedidos, recuerda que manejamos una amplia variedad de productos para la seguridad industrial de tu equipo de trabajo:</p>
+
+                <div style="text-align: center;">
+                    <a href="https://wa.me/573116559047" class="whatsapp" target="_blank">
+                        <img src="whatsapp-icon.png" alt="WhatsApp" class="icono-wa" />Escríbenos por WhatsApp</a>
+                </div>
+
+                <p style="margin-top: 20px;">También puedes seguirnos en nuestras redes sociales:</p>
+                <ul>
+                    <a href="https://www.instagram.com/dotaesmart.seguridad?igsh=MTNoc3RwZTN4YmZoMg==" class="facebook" target="_blank">
+                        <img src="instagram-icon.png" alt="Instagram" class="icono-in"/></a>
+
+                    <a href="https://www.facebook.com/share/15Yo3h2Zfm/" class="facebook" target="_blank">
+                        <img src="facebook-icon.png" alt="Facebook" class="icono-fc"/></a>
+                </ul>
+            </section>
+
+        </div> <footer class="footer">
+        <div class="footer-container">
+
+            <div class="footer-column">
+                <h3>Información de contacto</h3>
+                <p><strong>Dirección</strong><br>
+                    Cra 5 #16–25<br>
+                    Mosquera, Cundinamarca</p>
+
+                <p><strong>Teléfono</strong><br>
+                    Línea de WhatsApp<br>
+                    311 6559047<br></p>
+
+                <p><strong>Correo electrónico</strong><br>
+                    dotaesmart@hotmail.com<br></p>
+            </div>
+
+            <div class="footer-column">
+                <h3>Ubicación</h3>
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d835.1781204048862!2d-74.1738477151416!3d4.694144699125892!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2sco!4v1750448770003!5m2!1ses!2sco"
+                    width="100%"
+                    height="150"
+                    style="border:0; border-radius: 10px;"
+                    allowfullscreen=""
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+
+            <div class="footer-column">
+                <h3>Nuestra compañía</h3>
+                <ul>
+                    <li><a href="#quienes">Quiénes somos</a></li>
+                    <li><a href="#servicios">Nuestros productos</a></li>
+                    <li><a href="#contacto">Contáctanos</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Políticas</h3>
+                <ul>
+                    <li><a href="#">Políticas</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            ©2025 Dotaesmart | Mosquera, Cundinamarca
+        </div>
+    </footer>
+
+    <script>
+        const imagenes = ["dotacion.png", "lluvia.png", "trabajadores.png"];
+        let indice = 0;
+
+        function cambiarImagen(direccion) {
+            indice = (indice + direccion + imagenes.length) % imagenes.length;
+            document.getElementById("miImagen").src = imagenes[indice];
+        }
+
+        setInterval(() => {
+            cambiarImagen(1);
+        }, 5000);
+
+        let carrito = [];
+        let selectedProduct = { nombre: '', precio: 0 };
+
+        function toggleCart() {
+            document.getElementById("cartSidebar").classList.toggle("active");
+        }
+
+        function showModal(nombre, precio) {
+            selectedProduct = { nombre, precio };
+            document.getElementById("modal-title").textContent = nombre;
+            document.getElementById("modal-qty").value = 1;
+            document.getElementById("modal").style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById("modal").style.display = "none";
+        }
+
+        function confirmAddToCart() {
+            const cantidad = parseInt(document.getElementById("modal-qty").value);
+            if (isNaN(cantidad) || cantidad < 1) return;
+
+            const item = carrito.find(p => p.nombre === selectedProduct.nombre);
+            if (item) {
+                item.cantidad += cantidad;
+            } else {
+                carrito.push({ ...selectedProduct, cantidad });
+            }
+
+            renderCart();
+            closeModal();
+        }
+
+        function renderCart() {
+            const contenedor = document.getElementById("cartItems");
+            const total = document.getElementById("cartTotal");
+            contenedor.innerHTML = "";
+
+            let suma = 0;
+            carrito.forEach((producto, index) => {
+                suma += producto.precio * producto.cantidad;
+                const div = document.createElement("div");
+                div.className = "cart-item";
+                div.innerHTML = `
+                    <span>${producto.nombre} x${producto.cantidad}</span>
+                    <span>$${(producto.precio * producto.cantidad).toLocaleString()}
+                        <button class="remove-one" onclick="eliminarUno(${index})">-</button></span>
+                `;
+                contenedor.appendChild(div);
+            });
+
+            total.textContent = `Total: $${suma.toLocaleString()}`;
+        }
+
+        function eliminarUno(index) {
+            if (carrito[index].cantidad > 1) {
+                carrito[index].cantidad--;
+            } else {
+                carrito.splice(index, 1);
+            }
+            renderCart();
+        }
+
+        function vaciarCarrito() {
+            carrito = [];
+            renderCart();
+        }
+
+        function comprar() {
+            if (carrito.length === 0) {
+                alert("El carrito está vacío.");
+                return;
+            }
+            document.getElementById("checkoutModal").style.display = "block";
+        }
+
+        function cerrarCheckout() {
+            document.getElementById("checkoutModal").style.display = "none";
+        }
+
+        function confirmarCompra() {
+            const nombre = document.getElementById("nombreComprador").value.trim();
+            const direccion = document.getElementById("direccionEntrega").value.trim();
+            const contacto = document.getElementById("telefonoContacto").value.trim();
+
+            if (!nombre || !direccion || !contacto) {
+                alert("Por favor, completa todos los campos.");
+                return;
+            }
+
+                        fetch("http://localhost:5000/guardar_pedido", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    nombre: nombre,
+                    direccion: direccion,
+                    contacto: contacto,
+                    carrito: carrito
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert("Gracias por tu compra. Pronto nos pondremos en contacto.");
+                document.getElementById("checkoutModal").style.display = "none";
+                carrito = [];
+                renderCart();
+                document.getElementById("cartSidebar").classList.remove("active");
+            })
+            .catch(err => {
+                alert("Hubo un error al guardar el pedido. Verifica la consola para más detalles.");
+                console.error("Error al guardar el pedido:", err);
+            });
+        }
+    </script>
+
+    </body>
+</html>

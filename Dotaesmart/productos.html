@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Productos Dotaesmart</title>
+  <style>
+
+
+.modal-content {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 25px 30px;
+  max-width: 400px;
+  width: 90%;
+  margin: auto;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-content h3 {
+  margin-bottom: 20px;
+  font-size: 1.5em;
+  color: #0b1c3f;
+}
+
+.modal-content label {
+  display: block;
+  margin: 10px 0 5px;
+  text-align: left;
+  color: #333;
+  font-weight: bold;
+}
+
+.modal-content input[type="text"] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1em;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.modal-content input[type="text"]:focus {
+  border-color: #0b1c3f;
+}
+
+/* Estilo de los botones */
+.confirm-button, .close-button {
+  margin: 12px 5px 0;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+/* Confirmar */
+.confirm-button {
+  background-color: #0b1c3f;
+  color: white;
+}
+
+.confirm-button:hover {
+  background-color: #132e6b;
+  transform: scale(1.03);
+}
+
+/* Cancelar */
+.close-button {
+  background-color: #ccc;
+  color: #333;
+}
+
+.close-button:hover {
+  background-color: #aaa;
+  transform: scale(1.03);
+}
+
+/* Animación */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 6px;
+  margin: 5px 0;
+}
+
+.confirm-button, .close-button {
+  margin: 10px 5px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.confirm-button {
+  background-color: #0b1c3f;
+  color: white;
+}
+
+.close-button {
+  background-color: #ccc;
+  color: black;
+}
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f4f4f4;
+    }
+
+    .product-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .product-card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      width: 220px;
+      padding: 15px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+
+    .product-card:hover {
+      transform: scale(1.02);
+    }
+
+    .product-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .product-card h3 {
+      margin: 10px 0 5px;
+    }
+
+    .product-card p {
+      margin: 0;
+      color: #0b1c3f;
+      font-weight: bold;
+    }
+
+    .product-card button {
+      margin-top: 10px;
+      padding: 8px 12px;
+      background-color: #0b1c3f;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .cart-sidebar {
+      position: fixed;
+      top: 0;
+      right: -350px;
+      width: 300px;
+      height: 100%;
+      background-color: white;
+      box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      transition: right 0.3s;
+      z-index: 1000;
+    }
+
+    .cart-sidebar.active {
+      right: 0;
+    }
+
+    .cart-sidebar h2 {
+      margin-top: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cart-items {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+
+    .cart-total {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .buy-button, .clear-button {
+      margin-top: 10px;
+      background-color: #f1c40f;
+      color: #0b1c3f;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .cart-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #0b1c3f;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 1001;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 300px;
+      text-align: center;
+    }
+
+    .modal-content input {
+      width: 60px;
+      margin: 10px 0;
+    }
+
+    .confirm-button, .close-button {
+      margin: 10px 5px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .confirm-button {
+      background-color: #0b1c3f;
+      color: white;
+    }
+
+    .close-button {
+      background-color: #ccc;
+      color: black;
+    }
+
+    .remove-one {
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 2px 6px;
+      margin-left: 10px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .close-cart {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: #333;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 style="text-align: center; color: #0b1c3f;">Productos Dotaesmart</h1>
+  <button class="cart-toggle" onclick="toggleCart()">🛒 Ver Carrito</button>
+
+  <div class="product-container">
+    <div class="product-card">
+      <img src="guante1.jpg" alt="Guante de carnaza" />
+      <h3>Guante de carnaza</h3>
+      <p>$25.000</p>
+      <button onclick="showModal('Guante de carnaza', 25000)">Agregar al carrito</button>
+    </div>
+
+    <div class="product-card">
+      <img src="gafas.jpg" alt="Gafas de protección" />
+      <h3>Gafas de protección</h3>
+      <p>$5.000</p>
+      <button onclick="showModal('Gafas de protección', 5000)">Agregar al carrito</button>
+    </div>
+
+    <div class="product-card">
+      <img src="tapa-oidos.jpg" alt="Tapa oidos" />
+      <h3>Tapa oidos</h3>
+      <p>$3.000</p>
+      <button onclick="showModal('Tapa oidos', 3000)">Agregar al carrito</button>
+    </div>
+
+    <div class="product-card">
+      <img src="casco1.jpg" alt="Casco de seguridad" />
+      <h3>Casco de seguridad</h3>
+      <p>$35.000</p>
+      <button onclick="showModal('Casco de seguridad', 35000)">Agregar al carrito</button>
+    </div>
+
+    <div class="product-card">
+      <img src="botas1.jpg" alt="Botas industriales" />
+      <h3>Botas industriales</h3>
+      <p>$70.000</p>
+      <button onclick="showModal('Botas industriales', 70000)">Agregar al carrito</button>
+    </div>
+  </div>
+
+
+<div class="cart-sidebar" id="cartSidebar">
+  <button class="close-cart" onclick="toggleCart()">✖</button>
+  <h2>Carrito</h2>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-total" id="cartTotal">Total: $0</div>
+  <button class="buy-button" onclick="comprar()">Comprar</button>
+  <button class="clear-button" onclick="vaciarCarrito()">Vaciar carrito</button>
+</div>
+
+
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <h3 id="modal-title">Producto</h3>
+      <label>Cantidad:</label>
+      <input type="number" id="modal-qty" min="1" value="1">
+      <button class="confirm-button" onclick="confirmAddToCart()">Añadir al carrito</button>
+      <button class="close-button" onclick="closeModal()">Cancelar</button>
+    </div>
+  </div>
+  
+  <div id="checkoutModal" class="modal">
+    <div class="modal-content">
+      <h3>Finalizar compra</h3>
+      <label>Nombre o empresa:</label><br>
+      <input type="text" id="nombreComprador" required><br><br>
+
+      <label>Dirección de entrega:</label><br>
+      <input type="text" id="direccionEntrega" required><br><br>
+
+      <label>Número de contacto:</label><br>
+      <input type="text" id="telefonoContacto" required><br><br>
+
+      <button class="confirm-button" onclick="confirmarCompra()">Continuar</button>
+      <button class="close-button" onclick="cerrarCheckout()">Cancelar</button>
+
+    </div>
+  </div>
+
+  <script>
+  let carrito = [];
+  let selectedProduct = { nombre: '', precio: 0 };
+
+  function toggleCart() {
+    document.getElementById("cartSidebar").classList.toggle("active");
+  }
+
+  function showModal(nombre, precio) {
+    selectedProduct = { nombre, precio };
+    document.getElementById("modal-title").textContent = nombre;
+    document.getElementById("modal-qty").value = 1;
+    document.getElementById("modal").style.display = "block";
+  }
+
+  function closeModal() {
+    document.getElementById("modal").style.display = "none";
+  }
+
+  function confirmAddToCart() {
+    const cantidad = parseInt(document.getElementById("modal-qty").value);
+    if (isNaN(cantidad) || cantidad < 1) return;
+    const item = carrito.find(p => p.nombre === selectedProduct.nombre);
+    if (item) {
+      item.cantidad += cantidad;
+    } else {
+      carrito.push({ ...selectedProduct, cantidad });
+    }
+    renderCart();
+    closeModal();
+  }
+
+  function renderCart() {
+    const contenedor = document.getElementById("cartItems");
+    const total = document.getElementById("cartTotal");
+    contenedor.innerHTML = "";
+
+    let suma = 0;
+    carrito.forEach((producto, index) => {
+      suma += producto.precio * producto.cantidad;
+      const div = document.createElement("div");
+      div.className = "cart-item";
+      div.innerHTML = `
+        <span>${producto.nombre} x${producto.cantidad}</span>
+        <span>$${(producto.precio * producto.cantidad).toLocaleString()} 
+          <button class="remove-one" onclick="eliminarUno(${index})">-</button></span>
+      `;
+      contenedor.appendChild(div);
+    });
+
+    total.textContent = `Total: $${suma.toLocaleString()}`;
+  }
+
+  function eliminarUno(index) {
+    if (carrito[index].cantidad > 1) {
+      carrito[index].cantidad--;
+    } else {
+      carrito.splice(index, 1);
+    }
+    renderCart();
+  }
+
+  function vaciarCarrito() {
+    carrito = [];
+    renderCart();
+  }
+
+  function comprar() {
+    if (carrito.length === 0) {
+      alert("El carrito está vacío.");
+      return;
+    }
+    document.getElementById("checkoutModal").style.display = "block";
+  }
+
+  function cerrarCheckout() {
+    document.getElementById("checkoutModal").style.display = "none";
+  }
+
+  function confirmarCompra() {
+    const nombre = document.getElementById("nombreComprador").value.trim();
+    const direccion = document.getElementById("direccionEntrega").value.trim();
+    const contacto = document.getElementById("telefonoContacto").value.trim();
+
+    if (!nombre || !direccion || !contacto) {
+      alert("Por favor, completa todos los campos.");
+      return;
+    }
+
+    fetch("http://localhost:5000/guardar_pedido", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        nombre: nombre,
+        direccion: direccion,
+        contacto: contacto,
+        carrito: carrito
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      alert("Gracias por tu compra. Pronto nos pondremos en contacto.");
+      document.getElementById("checkoutModal").style.display = "none";
+      carrito = [];
+      renderCart();
+      document.getElementById("cartSidebar").classList.remove("active");
+    })
+    .catch(err => {
+      alert("Hubo un error al guardar el pedido.");
+      console.error(err);
+    });
+  }
+</script>
+
+</body>
+</html>
