@@ -1,51 +1,60 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from openpyxl import load_workbook
-from datetime import datetime
+from openpyxl import Workbook, load_workbook
 import os
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)
 
-ARCHIVO_EXCEL = "pedidos/pedidos.xlsx"
 
-@app.route('/guardar_pedido', methods=['POST'])
+CARPETA_PEDIDOS = "pedidos"
+ARCHIVO_EXCEL = os.path.join(CARPETA_PEDIDOS, "pedidos.xlsx")
+
+@app.route("/guardar_pedido", methods=["POST"])
 def guardar_pedido():
     try:
-        data = request.get_json()
+        datos = request.json
+        nombre = datos.get("nombre")
+        direccion = datos.get("direccion")
+        contacto = datos.get("contacto")
+        carrito = datos.get("carrito", [])
 
-        nombre = data.get("nombre")
-        direccion = data.get("direccion")
-        contacto = data.get("contacto")
-        carrito = data.get("carrito")
+        os.makedirs(CARPETA_PEDIDOS, exist_ok=True)
 
-        if not all([nombre, direccion, contacto, carrito]):
-            return jsonify({"error": "Faltan datos"}), 400
+
+        if not os.path.exists(ARCHIVO_EXCEL):
+            wb = Workbook()
+            ws = wb.active
+            ws.title = "Pedidos"
+            ws.append(["Fecha", "Nombre", "Dirección", "Contacto", "Producto", "Cantidad", "Precio Unitario", "Subtotal"])
+            wb.save(ARCHIVO_EXCEL)
 
         wb = load_workbook(ARCHIVO_EXCEL)
         ws = wb.active
 
-        for producto in carrito:
+        for item in carrito:
+            nombre_producto = item["nombre"]
+            cantidad = item["cantidad"]
+            precio = item["precio"]
+            subtotal = cantidad * precio
             ws.append([
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 nombre,
                 direccion,
                 contacto,
-                producto['nombre'],
-                producto['cantidad'],
-                producto['precio'],
-                producto['precio'] * producto['cantidad']
+                nombre_producto,
+                cantidad,
+                precio,
+                subtotal
             ])
 
         wb.save(ARCHIVO_EXCEL)
-
-        return jsonify({"mensaje": "Pedido guardado con éxito"})
+        return jsonify({"mensaje": "Pedido guardado con éxito"}), 200
 
     except Exception as e:
-        print("Error al guardar el pedido:", str(e))
+        print("Error al guardar el pedido:", e)
         return jsonify({"error": "Error interno del servidor"}), 500
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True, port=5000)
-
-
