@@ -21,8 +21,8 @@ def index():
     try:
         return render_template('test.html')
     except Exception as e:
-        print(f"Error al renderizar la plantilla 'dotasmesmart.html': {e}")
-        return f"<h1>Error al cargar la página principal</h1><p>Detalle: {e}</p><p>Verifica si 'dotasmesmart.html' está en la carpeta correcta y sin errores.</p>", 500
+        print(f"Error al renderizar la plantilla 'test.html': {e}")
+        return f"<h1>Error al cargar la página principal</h1><p>Detalle: {e}</p><p>Verifica si 'test.html' está en la carpeta correcta y sin errores.</p>", 500
 
 
 @app.route("/guardar_pedido", methods=["POST"])
