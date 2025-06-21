@@ -1,57 +1,51 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import os
-from openpyxl import Workbook, load_workbook
+from openpyxl import load_workbook
 from datetime import datetime
+import os
 
 app = Flask(__name__)
 CORS(app)
 
-CARPETA_PEDIDOS = "pedidos"
-ARCHIVO_EXCEL = os.path.join(CARPETA_PEDIDOS, "pedidos.xlsx")
-
-os.makedirs(CARPETA_PEDIDOS, exist_ok=True)
+ARCHIVO_EXCEL = "pedidos/pedidos.xlsx"
 
 @app.route('/guardar_pedido', methods=['POST'])
 def guardar_pedido():
     try:
-        datos = request.json
-        nombre = datos['nombre']
-        direccion = datos['direccion']
-        contacto = datos['contacto']
-        carrito = datos['carrito']
+        data = request.get_json()
 
+        nombre = data.get("nombre")
+        direccion = data.get("direccion")
+        contacto = data.get("contacto")
+        carrito = data.get("carrito")
 
-        if not os.path.exists(ARCHIVO_EXCEL):
-            wb = Workbook()
-            ws = wb.active
-            ws.append(["Fecha", "Nombre", "Dirección", "Contacto", "Producto", "Cantidad", "Precio"])
-        else:
-            wb = load_workbook(ARCHIVO_EXCEL)
-            ws = wb.active
+        if not all([nombre, direccion, contacto, carrito]):
+            return jsonify({"error": "Faltan datos"}), 400
 
-        fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        wb = load_workbook(ARCHIVO_EXCEL)
+        ws = wb.active
 
-        for item in carrito:
+        for producto in carrito:
             ws.append([
-                fecha,
+                datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 nombre,
                 direccion,
                 contacto,
-                item['nombre'],
-                item['cantidad'],
-                item['precio']
+                producto['nombre'],
+                producto['cantidad'],
+                producto['precio'],
+                producto['precio'] * producto['cantidad']
             ])
 
         wb.save(ARCHIVO_EXCEL)
 
-        return jsonify({"mensaje": "Pedido guardado correctamente"}), 200
+        return jsonify({"mensaje": "Pedido guardado con éxito"})
+
     except Exception as e:
-        print("Error al guardar el pedido:", e)
-        return jsonify({"error": "Error al guardar el pedido"}), 500
+        print("Error al guardar el pedido:", str(e))
+        return jsonify({"error": "Error interno del servidor"}), 500
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(debug=True, port=5000)
 
 
