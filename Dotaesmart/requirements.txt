@@ -37,3 +37,4 @@ uritemplate==4.1.0
 urllib3==2.2.1
 Werkzeug==3.0.1
 gunicorn
+whitenoise 
